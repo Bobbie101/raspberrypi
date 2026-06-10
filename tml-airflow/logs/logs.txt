@@ -12799,3 +12799,16 @@ origin	https://<personal access token hidden>@github.com/Bobbie101/raspberrypi.g
 [INFO 2026-05-21_03:44:31] Localfile producing DAG in tml_read_LOCALFILE_step_3_kafka_producetotopic_dag-iotsolution-3315.py
 [INFO 2026-05-21_03:44:32] Preprocessing DAG in tml_system_step_4_kafka_preprocess_dag-iotsolution-3315.py
 [INFO 2026-05-21_03:44:33] Visualization DAG in tml_system_step_7_kafka_visualization_dag-iotsolution-3315.py
+[INFO 2026-06-10_20:11:00] TML Solution Studio Started: DOCKERUSERNAME=Bobbie101, GITUSERNAME=Bobbie101, GITREPOURL=https://github.com/Bobbie101/raspberrypi.git, AIRFLOWPORT=9000
+[INFO 2026-06-10_20:11:00] TML Solution Studio: Docker Login Status: Error response from daemon: Get "https://registry-1.docker.io/v2/": unknown: malformed HTTP Authorization header
+[INFO 2026-06-10_20:11:00] TML Solution Studio: Github Config Status: core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+remote.origin.url=https://github.com/Bobbie101/raspberrypi.git
+remote.origin.fetch=+refs/heads/main:refs/remotes/origin/main
+remote.origin.pushurl=https://<personal access token hidden>@github.com/Bobbie101/raspberrypi.git
+branch.main.remote=origin
+branch.main.merge=refs/heads/main
+[INFO 2026-06-10_20:11:00] TML Solution Studio: Github Remote Status: origin	https://github.com/Bobbie101/raspberrypi.git (fetch)
+origin	https://<personal access token hidden>@github.com/Bobbie101/raspberrypi.git (push)

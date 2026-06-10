@@ -9,6 +9,8 @@ import tsslogging
 import git
 import time
 import sys
+import threading
+import uuid
 
 sys.dont_write_bytecode = True
 
@@ -44,7 +46,8 @@ def dockerit(**context):
        
        chip = context['ti'].xcom_pull(task_ids='step_1_solution_task_getparams',key="{}_chip".format(sname))         
        cname = os.environ['DOCKERUSERNAME']  + "/{}-{}".format(sname,chip)          
-      
+       dockercname="{}-{}".format(sname,chip)    
+           
        print("Containername=",cname)
        tsslogging.locallogs("INFO", "STEP 8: Starting docker push for: {}".format(cname))
        if os.environ['TSS'] == "1":
@@ -67,21 +70,26 @@ def dockerit(**context):
        if os.environ['TSS'] == "1" and len(cid) > 1: 
          print("[INFO] docker commit {} {}".format(cid,cname))  
          subprocess.call("docker rmi -f $(docker images --filter 'dangling=true' -q --no-trunc)", shell=True)
+         subprocess.call(f"docker rmi -f {cname}", shell=True)
+         subprocess.call(f"docker rmi -f {cname}-tmlworking", shell=True)
+             
          cbuf="docker commit {} {}".format(cid,cname)
-         v=subprocess.call("docker commit {} {}".format(cid,cname), shell=True)
-       
-         status=tsslogging.optimizecontainer(cname,sname,sd) 
-         if status=="":   
-           tsslogging.locallogs("WARN", "STEP 8: There seems to be an issue optimizing the container.  Here is the commit command: {} - message={}.  Container may NOT pushed.".format(cbuf,v)) 
-         else:
-           tsslogging.locallogs("INFO", "STEP 8: Docker Container created and optimized.  Will push it now.  Here is the commit command: {} - message={}".format(cbuf,v))         
-           
-         #v=subprocess.call("docker push {}".format(cname), shell=True) 
-         proc=subprocess.Popen("docker push {}".format(cname), shell=True)
-         time.sleep(3)   
-         proc.terminate()
-         proc.wait()
+         v=subprocess.call("docker commit {} {}-tmlworking".format(cid,cname), shell=True)
 
+         QUEUE_DIR = "/tmux/optimizer_queue"
+         os.makedirs(QUEUE_DIR, exist_ok=True)
+         #job_file = os.path.join(QUEUE_DIR, f"{cname}.job")
+    
+          # Write the arguments inside the file as metadata
+         with open(f"{QUEUE_DIR}/{dockercname}.job", "w") as f:
+              f.write(f"CNAME={cname}\n")
+              f.write(f"SNAME={sname}\n")
+              f.write(f"SD={sd}\n")
+              f.write(f"REPO={repo}\n")
+              f.write(f"OCNAME={cname}-tmlworking\n")               
+          
+         tsslogging.locallogs("INFO", "STEP 8: Docker Container process started - check Github logs for status - it could take few minutes. Here is the commit command: {} - message={}".format(cbuf,v))         
+           
        elif len(cid) <= 1:
               tsslogging.locallogs("ERROR", "STEP 8: There seems to be an issue with docker commit. Here is the command: docker commit {} {}".format(cid,cname)) 
               tsslogging.tsslogit("Deploying to Docker in {}".format(os.path.basename(__file__)), "ERROR" )             

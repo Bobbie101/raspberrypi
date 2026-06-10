@@ -95,7 +95,7 @@ def ingress(sname):
     data:
       allow-snippet-annotations: "true"
   """.format(sname,sname,sname)
-    
+
   return ing
 
 def ingressgrpc(sname):
@@ -164,43 +164,6 @@ def ingressgrpc(sname):
 
   return ing
 
-def ingressnoext(sname): # Localfile being accessed
-  ing = """
-    ############# nginx-ingress-{}.yml
-    apiVersion: networking.k8s.io/v1
-    kind: Ingress
-    metadata:
-      name: tml-ingress
-      annotations:
-        nginx.ingress.kubernetes.io/use-regex: "true"
-        nginx.ingress.kubernetes.io/rewrite-target: /$2
-    spec:
-      ingressClassName: nginx
-      rules:
-        - host: tml.tss
-          http:
-            paths:
-              - path: /viz(/|$)(.*)
-                pathType: ImplementationSpecific
-                backend:
-                  service:
-                    name: {}-visualization-service
-                    port:
-                      number: 80
-    ---
-    apiVersion: v1
-    kind: ConfigMap
-    apiVersion: v1
-    metadata:
-      name: ingress-nginx-controller
-      namespace: ingress-nginx
-    data:
-      allow-snippet-annotations: "true"
-  """.format(sname,sname,sname)
-
-  return ing
-
-  
 def writeoutymls(op,ingyml,solyml,sname):
 #                kcmd = "kubectl apply -f kafka.yml -f secrets.yml -f mysql-storage.yml -f mysql-db-deployment.yml -f qdrant.yml -f privategpt.yml -f ollama.yml -f {}.yml".format(sname)
   file_name=f"{op}/ingress.yml"
@@ -554,6 +517,8 @@ spec:
           value: "--agenticai-agenttoolfunctions--"
         - name: agent_team_supervisor_topic
           value: "--agenticai-agent_team_supervisor_topic--"
+        - name: contextwindow
+          value: "--agenticai-contextwindow--"          
         - name: TSS
           value: "0"
         - name: KUBE
@@ -589,6 +554,43 @@ spec:
   with open(file_name, "w") as file:
     file.write(ing)
 
+def ingressnoext(sname): # Localfile being accessed
+  ing = """
+    ############# nginx-ingress-{}.yml
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: tml-ingress
+      annotations:
+        nginx.ingress.kubernetes.io/use-regex: "true"
+        nginx.ingress.kubernetes.io/rewrite-target: /$2
+    spec:
+      ingressClassName: nginx
+      rules:
+        - host: tml.tss
+          http:
+            paths:
+              - path: /viz(/|$)(.*)
+                pathType: ImplementationSpecific
+                backend:
+                  service:
+                    name: {}-visualization-service
+                    port:
+                      number: 80
+    ---
+    apiVersion: v1
+    kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: ingress-nginx-controller
+      namespace: ingress-nginx
+    data:
+      allow-snippet-annotations: "true"
+  """.format(sname,sname,sname)
+
+  return ing
+
+
 def genkubeyaml(sname,containername,clientport,solutionairflowport,solutionvipervizport,solutionexternalport,sdag,
                 guser,grepo,chip,dockerusername,externalport,kuser,mqttuser,airflowport,vipervizport,
                 step4maxrows,step4bmaxrows,step5rollbackoffsets,step6maxrows,step1solutiontitle,step1description,
@@ -620,7 +622,7 @@ def genkubeyaml(sname,containername,clientport,solutionairflowport,solutionviper
                 step9bteamleadprompt='',
                 step9bsupervisor_topic='',
                 step9bagenttoolfunctions='',
-                step9bagent_team_supervisor_topic=''):
+                step9bagent_team_supervisor_topic='',step9bcontextwindow='',step9blocalmodelsfolder='',step9bagenttopic=''):
                
     cp = ""
     cpp = ""
@@ -829,7 +831,7 @@ def genkubeyaml(sname,containername,clientport,solutionairflowport,solutionviper
              - name: step9rollbackoffset # STEP 9 rollbackoffset field can be adjusted here.  Higher the number more information sent to privateGPT, BUT more memory needed.
                value: '{}'                                             
              - name: step9prompt # STEP 9 Enter PGPT prompt
-               value: "{}"                  
+               value: '{}'                  
              - name: step9context # STEP 9 Enter PGPT context
                value: '{}'             
              - name: step9keyattribute
@@ -889,17 +891,23 @@ def genkubeyaml(sname,containername,clientport,solutionairflowport,solutionviper
              - name: step9bembedding
                value: '{}'
              - name: step9bagents_topic_prompt
-               value: "{}"
+               value: '{}'
              - name: step9bteamlead_topic
                value: '{}'
              - name: step9bteamleadprompt
-               value: "{}"
+               value: '{}'
              - name: step9bsupervisor_topic
                value: '{}'
              - name: step9bagenttoolfunctions
-               value: "{}"
+               value: '{}'
              - name: step9bagent_team_supervisor_topic
                value: '{}'               
+             - name: step9bcontextwindow
+               value: '{}'                              
+             - name: step9bagenttopic
+               value: '{}'                              
+             - name: step9blocalmodelsfolder
+               value: '{}'                              
              - name: step1solutiontitle # STEP 1 solutiontitle field can be adjusted here. 
                value: '{}'                              
              - name: step1description # STEP 1 description field can be adjusted here. 
@@ -959,11 +967,10 @@ def genkubeyaml(sname,containername,clientport,solutionairflowport,solutionviper
                            step9brollbackoffset,step9bdeletevectordbcount,step9bvectordbpath,step9btemperature,
                            step9bvectordbcollectionname,step9bollamacontainername,step9bCUDA_VISIBLE_DEVICES,step9bmainip,
                            step9bmainport,step9bembedding,step9bagents_topic_prompt,step9bteamlead_topic,step9bteamleadprompt,
-                           step9bsupervisor_topic,step9bagenttoolfunctions,step9bagent_team_supervisor_topic,
+                           step9bsupervisor_topic,step9bagenttoolfunctions,step9bagent_team_supervisor_topic,step9bcontextwindow,step9bagenttopic,step9blocalmodelsfolder,
                            step1solutiontitle,step1description,kubebroker,kafkabroker,
                            sname,sname,solutionvipervizport,sname,sname,sname,mport,cpp,sname)
-
-
+                    
     return kcmd
 
 def genkubeyamlnoext(sname,containername,clientport,solutionairflowport,solutionvipervizport,solutionexternalport,sdag,
@@ -997,7 +1004,7 @@ def genkubeyamlnoext(sname,containername,clientport,solutionairflowport,solution
                      step9bteamleadprompt='',
                      step9bsupervisor_topic='',
                      step9bagenttoolfunctions='',
-                     step9bagent_team_supervisor_topic=''):
+                     step9bagent_team_supervisor_topic='',step9bcontextwindow='',step9blocalmodelsfolder='',step9bagenttopic=''):
                                          
     cp = ""
     cpp = ""
@@ -1202,7 +1209,7 @@ def genkubeyamlnoext(sname,containername,clientport,solutionairflowport,solution
              - name: step9rollbackoffset # STEP 9 rollbackoffset field can be adjusted here.  Higher the number more information sent to privateGPT, BUT more memory needed.
                value: '{}'                  
              - name: step9prompt # STEP 9 Enter PGPT prompt
-               value: "{}"                  
+               value: '{}'                  
              - name: step9context # STEP 9 Enter PGPT context
                value: '{}'                                 
              - name: step9keyattribute
@@ -1262,17 +1269,23 @@ def genkubeyamlnoext(sname,containername,clientport,solutionairflowport,solution
              - name: step9bembedding
                value: '{}'
              - name: step9bagents_topic_prompt
-               value: "{}"
+               value: '{}'
              - name: step9bteamlead_topic
                value: '{}'
              - name: step9bteamleadprompt
-               value: "{}"
+               value: '{}'
              - name: step9bsupervisor_topic
                value: '{}'
              - name: step9bagenttoolfunctions
-               value: "{}"
+               value: '{}'
              - name: step9bagent_team_supervisor_topic
                value: '{}'                              
+             - name: step9bcontextwindow
+               value: '{}'                                             
+             - name: step9bagenttopic
+               value: '{}'                              
+             - name: step9blocalmodelsfolder
+               value: '{}'                                             
              - name: step1solutiontitle # STEP 1 solutiontitle field can be adjusted here. 
                value: '{}'                              
              - name: step1description # STEP 1 description field can be adjusted here. 
@@ -1316,10 +1329,10 @@ def genkubeyamlnoext(sname,containername,clientport,solutionairflowport,solution
                            step9brollbackoffset,step9bdeletevectordbcount,step9bvectordbpath,step9btemperature,
                            step9bvectordbcollectionname,step9bollamacontainername,step9bCUDA_VISIBLE_DEVICES,step9bmainip,
                            step9bmainport,step9bembedding,step9bagents_topic_prompt,step9bteamlead_topic,step9bteamleadprompt,
-                           step9bsupervisor_topic,step9bagenttoolfunctions,step9bagent_team_supervisor_topic,                           
+                           step9bsupervisor_topic,step9bagenttoolfunctions,step9bagent_team_supervisor_topic,step9bcontextwindow,step9bagenttopic,step9blocalmodelsfolder,                           
                            step1solutiontitle,step1description,kubebroker,kafkabroker,
                            sname,sname,solutionvipervizport,sname)
-  
+                    
     return kcmd
 
 def getqip():
@@ -1330,10 +1343,107 @@ def getqip():
      qip=file1.read()
      qip=qip.rstrip()
      os.environ['qip']=qip  
+
+def optimizecontainer2(cname, sname, sd):
+    rbuf = os.environ.get('READTHEDOCS', '')
+    
+    # 1. Cleanly build parameters to skip heavy inline shell interpolation strings
+    env_vars = {
+        'GPG_KEY': '', 'PYTHON_SHA256': '', 'TSS': '-9',
+        'MQTTPASSWORD': '', 'DOCKERPASSWORD': '', 'SMTP_PASSWORD': '',
+        'SMTP_SERVER': '', 'SMTP_USERNAME': '', 'GITPASSWORD': '',
+        'recipient': '', 'PATH': '', 'KAFKACLOUDPASSWORD': '',
+        'DOCKERUSERNAME': os.environ.get('DOCKERUSERNAME', ''),
+        'SOLUTIONNAME': str(sname),
+        'SOLUTIONDAG': str(sd),
+        'READTHEDOCS': rbuf[:4]
+    }
+    
+    # Build env array arguments for the docker execution line safely
+    env_args = []
+    for k, v in env_vars.items():
+        env_args.extend(["--env", f"{k}={v}"])
+
+    # Construct complete command list to avoid using slow `shell=True` for container creation
+    cmd = ["docker", "run", "-d", "-v", "/var/run/docker.sock:/var/run/docker.sock:z"] + env_args + [cname]
+    
+    print(f"Container optimizing: {' '.join(cmd)[:200]}...") 
+    
+    try:
+        # Capture the spawned Container ID directly to track it perfectly
+        container_id = subprocess.check_output(cmd).decode("utf-8").strip()
+    except Exception as e:
+        print("ERROR launching container: ", e)
+        return "failed"
+
+    print(f"Tracking Container ID: {container_id[:12]}")
+
+    status = ""
+    start_time = time.time()
+    timeout = 450  # 90 iterations * 5s equivalent max ceiling
+
+    # 2. Adaptive Backoff Loop: Start fast, scale out if the 17GB processing takes longer
+    poll_interval = 1.0 
+    
+    while True:
+        elapsed = time.time() - start_time
+        if elapsed > timeout:
+            print("WARN: Unable to optimize container (Timeout reached)")
+            break
+            
+        try:
+            # 🟢 THE SPEED FIX: Use precise container status targeting.
+            # 'docker inspect' returns a clean state code rather than parsing huge string blocks.
+            check_cmd = ["docker", "inspect", "-f", "{{.State.Running}}", container_id]
+            is_running = subprocess.check_output(check_cmd).decode("utf-8").strip()
+            
+            if is_running == "false":
+                print("INFO: Container optimized and finished execution.")  
+                status = "good"
+                break
+                
+        except subprocess.CalledProcessError:
+            # Container was auto-removed or disappeared when finished, indicating completion
+            print("INFO: Container optimized (Lifecycle Complete)")
+            status = "good"
+            break
+        except Exception as e:
+            print("ERROR while tracking container state: ", e)
+            
+        # Dynamically scale intervals up to 4s max cap if processing is heavy
+        time.sleep(poll_interval)
+        if poll_interval < 4.0:
+            poll_interval += 0.5
+
+    # 3. Handle post-optimization verification tasks
+    if status == "good":
+        # Combine image tag operations or keep them standard without shell dependencies
+        subprocess.call(["docker", "image", "tag", f"{cname}sq:latest", cname], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.call(["docker", "rmi", f"{cname}sq:latest", "--force"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
+        print(f"🚀 Optimization verified. Initiating async push for {cname}...")
+        
+        # 🟢 THE BULK FLATTEN PUSH FIX: Cap network/disk allocation threads 
+        # Limits multi-core worker memory footprints from spiking on huge structural pushes
+        push_env = os.environ.copy()
+        push_env["GOMAXPROCS"] = "1"
+        
+        subprocess.Popen(
+            f"docker push {cname}", 
+            shell=True,
+            env=push_env,
+            stdout=subprocess.DEVNULL, 
+            stderr=subprocess.DEVNULL
+        )
+        
+        # Fast garbage collection 
+        subprocess.Popen("docker image prune -f", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)    
+
+    return status
+    
 def optimizecontainer(cname,sname,sd):
     rbuf=os.environ['READTHEDOCS']
-    buf="docker run -d -v /var/run/docker.sock:/var/run/docker.sock:z --env GPG_KEY='' --env PYTHON_SHA256='' --env DOCKERUSERNAME='{}' --env SOLUTIONNAME={} --env SOLUTIONDAG={} --env TSS=-9  --env READTHEDOCS='{}' --env MQTTPASSWORD='' --env DOCKERPASSWORD=''  --env  GITPASSWORD='' --env KAFKACLOUDPASSWORD='' {}".format(os.environ['DOCKERUSERNAME'], sname, sd, rbuf[:4],cname )
+    buf="docker run -d -v /var/run/docker.sock:/var/run/docker.sock:z --env GPG_KEY='' --env PYTHON_SHA256='' --env DOCKERUSERNAME='{}' --env SOLUTIONNAME={} --env SOLUTIONDAG={} --env TSS=-9  --env READTHEDOCS='{}' --env MQTTPASSWORD='' --env DOCKERPASSWORD='' --env SMTP_PASSWORD='' --env SMTP_SERVER='' --env SMTP_USERNAME='' --env  GITPASSWORD='' --env recipient='' --env PATH='' --env KAFKACLOUDPASSWORD='' {}".format(os.environ['DOCKERUSERNAME'], sname, sd, rbuf[:4],cname )
     
     print("Container optimizing: {}".format(buf))
     subprocess.call(buf, shell=True)
@@ -1364,16 +1474,31 @@ def optimizecontainer(cname,sname,sd):
       except Exception as e:
          print("ERROR: ",e)
          continue
-            
-    buf="docker image tag  {}sq:latest  {}".format(cname,cname)
-    print("Docker image tag: {}".format(buf))
-    subprocess.call(buf, shell=True)
-    time.sleep(3)
-    buf="docker rmi {}sq:latest --force".format(cname)
-    print("Docker image rmi: {}".format(buf))
+
+
+      if status == "good":
+        # 1. Update the image metadata tags
+        buf = "docker image tag {}sq:latest {}".format(cname, cname)
+        print("Docker image tag: {}".format(buf))
+        subprocess.call(buf, shell=True)
         
-    subprocess.call(buf, shell=True)
-    subprocess.call("docker rmi -f $(docker images --filter 'dangling=true' -q --no-trunc)", shell=True)
+        # 2. Remove the temporary 'sq' image pointer 
+        buf = "docker rmi {}sq:latest --force".format(cname)
+        print("Docker image rmi: {}".format(buf))
+        subprocess.call(buf, shell=True)
+        
+        # 3. Trigger the background push safely
+        print("🚀 Optimization verified. Initiating async push for {}...".format(cname))
+        proc = subprocess.Popen(
+            "docker push {}".format(cname), 
+            shell=True,
+            stdout=subprocess.DEVNULL,  # Prevents 17GB of progress bars from flooding your logs
+            stderr=subprocess.DEVNULL
+        )
+        
+        # 4. Clean up dangling builder layers AFTER the push process is handed off to the engine daemon
+        subprocess.call("docker image prune -f", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)    
+
     return status
     
 def testvizconnection(portnum):
