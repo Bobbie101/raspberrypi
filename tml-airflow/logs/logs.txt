@@ -12904,3 +12904,16 @@ branch.main.remote=origin
 branch.main.merge=refs/heads/main
 [INFO 2026-06-18_18:40:59] TML Solution Studio: Github Remote Status: origin	https://github.com/Bobbie101/raspberrypi.git (fetch)
 origin	https://<personal access token hidden>@github.com/Bobbie101/raspberrypi.git (push)
+[INFO 2026-06-30_04:03:53] TML Solution Studio Started: DOCKERUSERNAME=Bobbie101, GITUSERNAME=Bobbie101, GITREPOURL=https://github.com/Bobbie101/raspberrypi.git, AIRFLOWPORT=9000
+[INFO 2026-06-30_04:03:53] TML Solution Studio: Docker Login Status: Error response from daemon: Get "https://registry-1.docker.io/v2/": unknown: malformed HTTP Authorization header
+[INFO 2026-06-30_04:03:53] TML Solution Studio: Github Config Status: core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+remote.origin.url=https://github.com/Bobbie101/raspberrypi.git
+remote.origin.fetch=+refs/heads/main:refs/remotes/origin/main
+remote.origin.pushurl=https://<personal access token hidden>@github.com/Bobbie101/raspberrypi.git
+branch.main.remote=origin
+branch.main.merge=refs/heads/main
+[INFO 2026-06-30_04:03:53] TML Solution Studio: Github Remote Status: origin	https://github.com/Bobbie101/raspberrypi.git (fetch)
+origin	https://<personal access token hidden>@github.com/Bobbie101/raspberrypi.git (push)
