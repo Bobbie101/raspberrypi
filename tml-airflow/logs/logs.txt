@@ -13977,3 +13977,19 @@ origin	https://<personal access token hidden>@github.com/Bobbie101/raspberrypi.g
 [INFO 2026-07-03_03:37:20] Your Readthedocs token is empty
 [INFO 2026-07-03_03:37:31] Your Readthedocs token is empty
 [INFO 2026-07-03_03:37:43] Your Readthedocs token is empty
+[INFO 2026-07-03_16:07:19] TML Solution Studio Started: DOCKERUSERNAME=Bobbie101, GITUSERNAME=Bobbie101, GITREPOURL=https://github.com/Bobbie101/raspberrypi.git, AIRFLOWPORT=9000
+[INFO 2026-07-03_16:07:20] TML Solution Studio: Docker Login Status: Error response from daemon: Get "https://registry-1.docker.io/v2/": unknown: malformed HTTP Authorization header
+[INFO 2026-07-03_16:07:20] TML Solution Studio: Github Config Status: safe.directory=/raspberrypi
+pull.rebase=true
+url.https://Bobbie101:<personal access token hidden>@github.com/.insteadof=https://github.com/
+core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+user.email=Bobbie101@email.local
+user.name=Bobbie101
+remote.origin.url=https://github.com/Bobbie101/raspberrypi.git
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+remote.origin.pushurl=https://<personal access token hidden>@github.com/Bobbie101/raspberrypi.git
+[INFO 2026-07-03_16:07:20] TML Solution Studio: Github Remote Status: origin	https://Bobbie101:<personal access token hidden>@github.com/Bobbie101/raspberrypi.git (fetch)
+origin	https://<personal access token hidden>@github.com/Bobbie101/raspberrypi.git (push)
