@@ -14403,3 +14403,4 @@ Error response from daemon: Get "https://registry-1.docker.io/v2/": unknown: mal
 [INFO 2026-07-10_15:08:24] Preprocessing DAG in tml_system_step_4_kafka_preprocess_dag-myawesometmlsolutionml-9538.py
 [INFO 2026-07-10_15:08:26] Predictions DAG in tml_system_step_6_kafka_predictions_dag-myawesometmlsolutionml-9538.py
 [INFO 2026-07-10_15:08:26] Machine Learning DAG in tml_system_step_5_kafka_machine_learning_dag-myawesometmlsolutionml-9538.py
+[INFO 2026-07-10_15:08:33] Docker DAG in tml_system_step_8_deploy_solution_to_docker_dag-myawesometmlsolutionml-9538.py
