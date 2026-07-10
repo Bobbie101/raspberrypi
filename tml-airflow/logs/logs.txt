@@ -14401,3 +14401,5 @@ sha256:2b5a4ac4417118580fd7eaa460e10fdf43b53003ee2a9c7a3667ed4ac97cae33
 Error response from daemon: Get "https://registry-1.docker.io/v2/": unknown: malformed HTTP Authorization header
 [INFO 2026-07-10_15:08:24] Localfile producing DAG in tml_read_LOCALFILE_step_3_kafka_producetotopic_dag-myawesometmlsolutionml-9538.py
 [INFO 2026-07-10_15:08:24] Preprocessing DAG in tml_system_step_4_kafka_preprocess_dag-myawesometmlsolutionml-9538.py
+[INFO 2026-07-10_15:08:26] Predictions DAG in tml_system_step_6_kafka_predictions_dag-myawesometmlsolutionml-9538.py
+[INFO 2026-07-10_15:08:26] Machine Learning DAG in tml_system_step_5_kafka_machine_learning_dag-myawesometmlsolutionml-9538.py
