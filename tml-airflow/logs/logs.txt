@@ -14519,3 +14519,5 @@ origin	https://<personal access token hidden>@github.com/Bobbie101/raspberrypi.g
 🚀 STARTING 4-STEP OPTIMIZATION FOR: Bobbie101/myawesometmlsolutionml-9538-ml-arm64-tmlworking
 =============================================================
 e4c87b55865748eda74b053de1ef62a81267bd5dea475aef0b5b66da67f3860e
+sha256:d0b69dc14c8d89aa51accf263b1dfae9163f65898d4a682d6205e1d90d3ade9d
+Error response from daemon: Get "https://registry-1.docker.io/v2/": unknown: malformed HTTP Authorization header
